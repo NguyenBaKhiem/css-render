@@ -46,7 +46,8 @@ export function useSsrAdapter ():
 }
 
 interface SsrHandle {
-  collect: () => string
+  collect: () => string,
+  collectAsArray: () => string[],
 }
 
 export function setup (app: App): SsrHandle {
@@ -56,11 +57,14 @@ export function setup (app: App): SsrHandle {
     ids: new Set<string>()
   }
   app.provide(ssrContextKey, ssrContext)
-  return {
+  const ssrhandle = {
     collect () {
-      const res = styles.join('\n')
-      styles.length = 0
-      return res
+      return styles.join('\n')
+    },
+    collectAsArray () {
+      return styles
     }
   }
+  styles.length = 0
+  return ssrhandle
 }
